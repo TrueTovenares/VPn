@@ -1,0 +1,31 @@
+# Шаблон upstream-интерфейса (awg1) — конфиг выдаёт VPN-провайдер.
+#
+# ВАЖНО: `Table = off` обязателен. Иначе awg-quick заменит
+# маршрут по умолчанию и сломает доступ в LAN/SSH.
+#
+# Параметры Jc/Jmin/Jmax/S1-S4/H1-H4/i1 — обфускация AmneziaWG.
+# Если провайдер их не использует, оставьте только стандартные поля.
+
+[Interface]
+Table = off
+Address = <PROVIDER_ADDRESS>/32
+PrivateKey = <PROVIDER_PRIVATE_KEY>
+DNS = 1.1.1.1
+Jc = 3
+Jmin = 50
+Jmax = 100
+S1 = 41
+S2 = 30
+S3 = 15
+S4 = 7
+H1 = <H1>
+H2 = <H2>
+H3 = <H3>
+H4 = <H4>
+i1 = <I1>
+
+[Peer]
+PublicKey = <PROVIDER_PUBLIC_KEY>
+AllowedIPs = 0.0.0.0/0
+Endpoint = <PROVIDER_HOST>:<PROVIDER_PORT>
+PersistentKeepalive = 27

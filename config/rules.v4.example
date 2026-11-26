@@ -1,0 +1,42 @@
+# Пример /etc/iptables/rules.v4 для iptables-persistent.
+#
+# Это НЕ полный дамп вашей системы: здесь только то, что нужно AWG Router.
+# Если на роутере уже есть свои правила (ufw, docker и т.п.), добавьте
+# эти строки в существующий файл, а не заменяйте его целиком.
+#
+# Применить (осторожно: iptables-restore заменяет таблицы целиком —
+# не копируйте файл поверх рабочего, если в нём есть другие правила):
+#   sudo iptables-save > /root/rules.v4.bak
+#   # добавьте блоки *mangle и *nat в существующий /etc/iptables/rules.v4
+#   sudo netfilter-persistent reload
+#
+# Проверить:
+#   sudo iptables -t nat -S POSTROUTING
+#   sudo iptables -t mangle -S FORWARD
+
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+# MSS clamping для туннеля awg1 (MTU 1280)
+-A FORWARD -o awg1 -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1240
+-A FORWARD -i awg1 -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1240
+COMMIT
+
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+COMMIT
+
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+# NAT клиентов в LAN и в upstream
+-A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+-A POSTROUTING -s 10.8.0.0/24 -o awg1 -j MASQUERADE
+COMMIT

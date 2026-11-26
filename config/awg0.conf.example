@@ -1,0 +1,19 @@
+# Шаблон серверного интерфейса AmneziaWG (awg0).
+# Замените <SERVER_PRIVATE_KEY> на результат `awg genkey`.
+# Пиры добавляются панелью; пример пира — в конце файла.
+#
+# ВАЖНО: не добавляйте сюда `Table = off` — awg-quick должен
+# добавить маршрут на 10.8.0.0/24.
+
+[Interface]
+Address = 10.8.0.1/24
+ListenPort = 51820
+PrivateKey = <SERVER_PRIVATE_KEY>
+MTU = 1280
+
+# Пример пира (создаётся панелью автоматически):
+#
+# # Name = iPhone_Pavel
+# [Peer]
+# PublicKey = <CLIENT_PUBLIC_KEY>
+# AllowedIPs = 10.8.0.3/32

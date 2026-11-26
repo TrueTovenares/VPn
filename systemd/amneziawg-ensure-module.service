@@ -1,0 +1,17 @@
+[Unit]
+Description=Ensure amneziawg kernel module is built and loaded
+Documentation=https://github.com/bivlked/amneziawg-installer
+Before=awg-quick@awg0.service
+After=systemd-modules-load.service local-fs.target
+ConditionPathExists=/usr/local/sbin/amneziawg-ensure-module
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/amneziawg-ensure-module --systemd
+TimeoutStartSec=300
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

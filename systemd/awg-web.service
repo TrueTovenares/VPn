@@ -1,0 +1,30 @@
+[Unit]
+Description=AWG Router Web UI (gunicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/pavelilyushin/awg-migration/web
+Environment=WEB_PORT=51821
+Environment=WEB_USER=pavelilyushin
+Environment=WEB_PASSWORD_FILE=/home/pavelilyushin/awg-migration/web/web.pass
+Environment=WEB_TLS_CERT=/home/pavelilyushin/awg-migration/web/certs/server.crt
+Environment=WEB_TLS_KEY=/home/pavelilyushin/awg-migration/web/certs/server.key
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/gunicorn \
+  --chdir /home/pavelilyushin/awg-migration/web \
+  --workers 1 --threads 8 --worker-class gthread \
+  --bind 0.0.0.0:51821 \
+  --certfile /home/pavelilyushin/awg-migration/web/certs/server.crt \
+  --keyfile /home/pavelilyushin/awg-migration/web/certs/server.key \
+  --timeout 180 --graceful-timeout 30 --keep-alive 5 \
+  --access-logfile - --error-logfile - \
+  app:app
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

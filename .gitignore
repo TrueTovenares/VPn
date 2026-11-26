@@ -1,0 +1,7 @@
+# Секреты и локальные артефакты — не коммитить
+web.pass
+certs/
+*.bak.*
+__pycache__/
+*.pyc
+.DS_Store

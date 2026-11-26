@@ -1,0 +1,12 @@
+[Unit]
+Description=AWG routing rules for clients
+After=network-online.target awg-quick@awg0.service awg-quick@awg1.service
+Wants=network-online.target awg-quick@awg0.service awg-quick@awg1.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'sleep 5; ip rule del from 10.8.0.0/24 lookup awg_foreign 2>/dev/null || true; ip rule add from 10.8.0.0/24 lookup awg_foreign priority 400; ip route replace default dev awg1 table 100; ip route replace 1.1.1.1/32 dev awg1; ip route replace 8.8.8.8/32 dev awg1; ip route replace 77.88.8.8/32 via 192.168.89.1 dev eth0'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
