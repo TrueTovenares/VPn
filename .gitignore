@@ -5,3 +5,11 @@ certs/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Реальные ключи, сертификаты и конфиги туннелей (в репо только *.example)
+*.key
+*.crt
+*.pem
+*.conf
+clients/
+
